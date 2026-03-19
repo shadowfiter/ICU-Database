@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>ICU Mobile · Complete</title>
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- PWA for direct installation -->
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ICU%20Mobile%22%2C%22short_name%22%3A%22ICU%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23e7f0f5%22%2C%22theme_color%22%3A%22%231e7e83%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22%231e7e83%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2270%22%20font-size%3D%2260%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%3E🏥%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ICU Mobile">
+<meta name="theme-color" content="#1e7e83">
+
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+background: #e7f0f5;
+padding: 0.8rem;
+min-height: 100vh;
+}
+
+.app-wrapper {
+max-width: 900px;
+margin: 0 auto;
+}
+
+/* Install Banner */
+.install-banner {
+background: linear-gradient(135deg, #1e7e83 0%, #0f6b7a 100%);
+color: white;
+border-radius: 30px;
+padding: 1rem 1.5rem;
+margin-bottom: 1rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.install-btn {
+background: white;
+color: #1e7e83;
+border: none;
+padding: 0.8rem 2rem;
+border-radius: 40px;
+font-weight: 700;
+font-size: 1rem;
+cursor: pointer;
+}
+
+/* Header */
+.header {
+background: white;
+border-radius: 30px;
+padding: 1rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 1rem;
+}
+.header h1 {
+font-size: 1.3rem;
+color: #003153;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+/* Data Controls */
+.data-controls {
+display: flex;
+gap: 0.5rem;
+margin-bottom: 1rem;
+flex-wrap: wrap;
+}
+.btn-control {
+background: white;
+border: none;
+padding: 0.5rem 1rem;
+border-radius: 30px;
+font-weight: 600;
+display: flex;
+align-items: center;
+gap: 6px;
+font-size: 0.8rem;
+cursor: pointer;
+}
+
+/* Patient Card */
+.focused-card {
+background: white;
+border-radius: 30px;
+padding: 1.2rem;
+margin-bottom: 1rem;
+}
+
+/* Patient Header */
+.patient-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 1rem;
+padding-bottom: 0.8rem;
+border-bottom: 2px solid #e5f1f7;
+}
+.patient-name {
+font-size: 1.5rem;
+font-weight: 700;
+color: #003153;
+}
+.patient-badge {
+background: #e5f1f7;
+padding: 0.3rem 0.8rem;
+border-radius: 30px;
+font-size: 0.8rem;
+}
+.admission-info {
+display: flex;
+gap: 0.5rem;
+flex-wrap: wrap;
+margin-top: 0.3rem;
+}
+.admission-badge {
+background: #1e7e83;
+color: white;
+padding: 0.2rem 0.8rem;
+border-radius: 30px;
+font-size: 0.7rem;
+}
+.stay-badge {
+background: #f0b342;
+color: #003153;
+padding: 0.2rem 0.8rem;
+border-radius: 30px;
+font-size: 0.7rem;
+font-weight: 600;
+}
+
+/* Editable History Section */
+.history-section {
+background: #f8f9fa;
+border-radius: 25px;
+padding: 1rem;
+margin-bottom: 1rem;
+border: 2px solid #f0b342;
+}
+.history-title {
+font-size: 1rem;
+font-weight: 600;
+color: #0f5e72;
+margin-bottom: 1rem;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.history-grid {
+display: grid;
+grid-template-columns: 1fr;
+gap: 1rem;
+}
+.history-item label {
+font-weight: 600;
+color: #555;
+display: block;
+margin-bottom: 0.3rem;
+}
+.history-item input, .history-item textarea {
+width: 100%;
+padding: 0.6rem;
+border: 1px solid #cde5f0;
+border-radius: 20px;
+font-size: 0.9rem;
+}
+.history-item textarea {
+min-height: 60px;
+resize: vertical;
+}
+
+/* Examination Section - Now directly below History */
+.exam-section {
+background: #f0f7fa;
+border-radius: 25px;
+padding: 1rem;
+margin-bottom: 1.5rem;
+border: 2px solid #1e7e83;
+}
+.exam-title {
+font-size: 1rem;
+font-weight: 600;
+color: #0f5e72;
+margin-bottom: 1rem;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.exam-grid {
+display: grid;
+grid-template-columns: 1fr;
+gap: 1rem;
+}
+.exam-box {
+background: white;
+border-radius: 20px;
+padding: 1rem;
+}
+.exam-box label {
+font-weight: 600;
+color: #0f5e72;
+display: block;
+margin-bottom: 0.5rem;
+}
+.exam-box textarea {
+width: 100%;
+padding: 0.6rem;
+border: 1px solid #cde5f0;
+border-radius: 20px;
+min-height: 80px;
+resize: vertical;
+}
+
+/* Timeline */
+.timeline {
+display: flex;
+gap: 0.4rem;
+overflow-x: auto;
+padding: 0.5rem 0;
+margin-bottom: 1rem;
+}
+.day-tab {
+background: #e5f1f7;
+padding: 0.4rem 1rem;
+border-radius: 30px;
+font-size: 0.8rem;
+white-space: nowrap;
+cursor: pointer;
+}
+.day-tab.active {
+background: #1e7e83;
+color: white;
+}
+
+/* Sections */
+.section {
+background: #f8fdff;
+border-radius: 25px;
+padding: 1rem;
+margin: 1rem 0;
+}
+.section-title {
+font-size: 1rem;
+font-weight: 600;
+color: #0f5e72;
+margin-bottom: 0.8rem;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+/* Vitals Grid */
+.vitals-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 0.8rem;
+}
+.vital-item {
+background: white;
+border-radius: 20px;
+padding: 0.8rem;
+text-align: center;
+}
+.vital-input {
+width: 100%;
+padding: 0.4rem;
+border: 1px solid #cde5f0;
+border-radius: 20px;
+text-align: center;
+}
+
+/* Labs Grid */
+.labs-grid {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 0.8rem;
+}
+.lab-item {
+background: white;
+border-radius: 20px;
+padding: 0.8rem;
+}
+.lab-label {
+font-size: 0.8rem;
+font-weight: 600;
+color: #0f5e72;
+margin-bottom: 0.3rem;
+}
+.lab-input {
+width: 100%;
+padding: 0.4rem;
+border: 1px solid #cde5f0;
+border-radius: 20px;
+}
+
+/* Microbiology */
+.micro-card {
+background: white;
+border-radius: 20px;
+padding: 1rem;
+margin-bottom: 1rem;
+border: 1px solid #cde5f0;
+}
+.micro-row {
+display: flex;
+gap: 0.5rem;
+margin-bottom: 0.5rem;
+}
+.micro-input {
+flex: 1;
+padding: 0.4rem;
+border: 1px solid #cde5f0;
+border-radius: 20px;
+}
+.micro-select {
+padding: 0.4rem;
+border: 1px solid #cde5f0;
+border-radius: 20px;
+}
+
+/* Radiology Section */
+.radiology-card {
+background: white;
+border-radius: 20px;
+padding: 1rem;
+margin-bottom: 1rem;
+border: 1px solid #cde5f0;
+}
+.radiology-row {
+display: flex;
+gap: 0.5rem;
+margin-bottom: 0.5rem;
+align-items: center;
+}
+.radiology-input {
+flex: 1;
+padding: 0.4rem;
+border: 1px solid #cde5f0;
+border-radius: 20px;
+}
+.radiology-status {
+padding: 0.4rem 1rem;
+border-radius: 20px;
+cursor: pointer;
+text-align: center;
+}
+.status-pending {
+background: #ffeed9;
+color: #b45b0a;
+}
+.status-done {
+background: #d4f0d4;
+color: #1d6b1d;
+}
+
+/* Buttons */
+.btn-save {
+background: #1e7e83;
+color: white;
+border: none;
+padding: 0.8rem;
+border-radius: 30px;
+font-weight: 600;
+width: 100%;
+margin-top: 1rem;
+cursor: pointer;
+}
+.btn-add {
+background: #0f6b7a;
+color: white;
+border: none;
+padding: 0.5rem 1rem;
+border-radius: 30px;
+font-size: 0.8rem;
+cursor: pointer;
+display: inline-flex;
+align-items: center;
+gap: 4px;
+margin-top: 0.5rem;
+}
+.btn-danger {
+background: #c04545;
+}
+
+/* Bottom Panel */
+.bottom-panel {
+background: white;
+border-radius: 30px;
+padding: 1rem;
+margin-top: 1rem;
+}
+.bed-section {
+display: flex;
+align-items: center;
+gap: 0.8rem;
+flex-wrap: wrap;
+}
+.bed-list {
+display: flex;
+gap: 0.4rem;
+flex-wrap: wrap;
+}
+.bed-item {
+background: #e5f1f7;
+padding: 0.4rem 0.8rem;
+border-radius: 30px;
+font-size: 0.8rem;
+cursor: pointer;
+}
+.bed-item.occupied {
+background: #1e7e83;
+color: white;
+}
+.bed-item.active {
+border: 2px solid #f0b342;
+}
+
+/* Modal */
+.modal {
+position: fixed;
+top: 0; left: 0; right: 0; bottom: 0;
+background: rgba(0,0,0,0.5);
+display: none;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+}
+.modal-content {
+background: white;
+border-radius: 30px;
+padding: 1.5rem;
+width: 90%;
+max-width: 400px;
+}
+.modal-content input {
+width: 100%;
+padding: 0.6rem;
+border: 1px solid #cde5f0;
+border-radius: 30px;
+margin: 0.5rem 0;
+}
+
+@media (min-width: 768px) {
+.labs-grid { grid-template-columns: repeat(4, 1fr); }
+.vitals-grid { grid-template-columns: repeat(6, 1fr); }
+.history-grid { grid-template-columns: repeat(2, 1fr); }
+.exam-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="app-wrapper">
+<!-- Install Banner -->
+<div id="installBanner" class="install-banner">
+<span><i class="fas fa-download"></i> <strong>Install ICU Mobile</strong></span>
+<button class="install-btn" id="installBtn">INSTALL</button>
+</div>
+
+<!-- Header -->
+<div class="header">
+<h1><i class="fas fa-hospital"></i> ICU Mobile</h1>
+<div>
+<button class="btn-control" id="exportBtn"><i class="fas fa-download"></i> Backup</button>
+<button class="btn-control" id="importBtn"><i class="fas fa-upload"></i> Restore</button>
+</div>
+</div>
+
+<!-- Main Content -->
+<div id="mainContainer"></div>
+
+<!-- Bottom Panel -->
+<div class="bottom-panel">
+<div class="bed-section">
+<span style="font-weight:600;">Beds</span>
+<div class="bed-list" id="bedList"></div>
+<button class="btn-add" id="addPatientBtn"><i class="fas fa-plus"></i> Admit</button>
+</div>
+</div>
+
+<!-- Add Patient Modal -->
+<div id="addPatientModal" class="modal">
+<div class="modal-content">
+<h3>Admit to Bed <span id="selectedBedSpan"></span></h3>
+<input type="text" id="patientName" placeholder="Patient Name">
+<input type="number" id="patientAge" placeholder="Age">
+<div style="display:flex; gap:0.5rem;">
+<button class="btn-save" id="confirmAdd" style="margin:0;">Admit</button>
+<button class="btn-save" id="cancelAdd" style="margin:0; background:#8daebd;">Cancel</button>
+</div>
+</div>
+</div>
+
+<!-- Import Modal -->
+<div id="importModal" class="modal">
+<div class="modal-content">
+<h3>Restore Backup</h3>
+<input type="file" id="importFile" accept=".json">
+<div style="display:flex; gap:0.5rem; margin-top:1rem;">
+<button class="btn-save" id="confirmImport" style="margin:0;">Restore</button>
+<button class="btn-save" id="cancelImport" style="margin:0; background:#8daebd;">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+(function() {
+// ========== DIRECT INSTALLATION ==========
+let deferredPrompt;
+const installBanner = document.getElementById('installBanner');
+const installBtn = document.getElementById('installBtn');
+
+// Hide if already installed
+if (window.matchMedia('(display-mode: standalone)').matches) {
+installBanner.style.display = 'none';
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+e.preventDefault();
+deferredPrompt = e;
+installBanner.style.display = 'flex';
+});
+
+// INSTALL BUTTON
+installBtn.addEventListener('click', async () => {
+if (deferredPrompt) {
+deferredPrompt.prompt();
+const { outcome } = await deferredPrompt.userChoice;
+if (outcome === 'accepted') {
+installBanner.style.display = 'none';
+}
+} else {
+alert('To install:\nAndroid: Chrome menu → "Install app"\niOS: Share → Add to Home Screen');
+}
+});
+
+// ========== DATA STORAGE ==========
+const STORAGE_KEY = 'icu_complete_data';
+
+// Default data
+const defaultPatients = [{
+id: 1,
+name: 'John Carter',
+age: 68,
+bed: 4,
+active: true,
+admissionDate: '2025-03-15',
+history: {
+cause: 'Septic shock, severe pneumonia',
+presentHistory: '3 days of fever, cough, confusion',
+pastHistory: 'Hypertension, DM type 2',
+comorbidities: 'HTN, DM'
+},
+dailyData: {
+'2025-03-15': {
+vitals: { hr: 120, sbp: 70, dbp: 40, spo2: 85, temp: 39.2, gcs: 12 },
+labs: {
+'TLC': '22.1', 'HB': '10.2', 'NEUT': '85', 'NA': '135', 'K': '4.2',
+'Ca total': '8.1', 'Ca ionised': '1.12', 'Urea': '45', 'Creat': '1.2',
+'ALT': '45', 'AST': '38', 'INR': '1.2', 'PT': '14', 'PTT': '32',
+'Albumin': '3.2', 'CRP': '120', 'Bilirubin total': '0.8', 'Bilirubin direct': '0.3'
+},
+exams: {
+respiratory: 'Bilateral crackles, increased work of breathing',
+abdominal: 'Soft, non-distended, bowel sounds present',
+neurological: 'Lethargic, localizes to pain'
+},
+microbiology: [
+{ type: 'Blood Culture', date: '2025-03-15', result: 'positive', organism: 'E. coli' },
+{ type: 'Sputum Culture', date: '2025-03-15', result: 'positive', organism: 'Klebsiella' }
+],
+radiology: [
+{ name: 'CT Chest', date: '2025-03-15', status: 'done', result: 'Bilateral infiltrates' },
+{ name: 'CT Brain', date: '2025-03-15', status: 'done', result: 'No acute bleed' },
+{ name: 'ECG', date: '2025-03-15', status: 'done', result: 'Sinus tachycardia' }
+]
+},
+'2025-03-18': {
+vitals: { hr: 108, sbp: 85, dbp: 52, spo2: 90, temp: 38.2, gcs: 14 },
+labs: {
+'TLC': '16.5', 'HB': '9.7', 'NEUT': '75', 'NA': '138', 'K': '3.8',
+'Ca total': '8.4', 'Urea': '35', 'Creat': '1.5', 'CRP': '60'
+},
+exams: {
+respiratory: 'Clear to auscultation',
+abdominal: 'Soft',
+neurological: 'Alert, oriented'
+},
+microbiology: [],
+radiology: []
+}
+}
+}];
+
+// Load or initialize data
+let patients = [];
+try {
+const saved = localStorage.getItem(STORAGE_KEY);
+patients = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultPatients));
+} catch (e) {
+patients = JSON.parse(JSON.stringify(defaultPatients));
+}
+
+// Save function
+function saveData() {
+localStorage.setItem(STORAGE_KEY, JSON.stringify(patients));
+}
+
+// ========== STATE ==========
+let selectedBed = 4;
+let selectedDate = new Date().toISOString().slice(0,10);
+
+// DOM elements
+const mainContainer = document.getElementById('mainContainer');
+const bedListEl = document.getElementById('bedList');
+const addPatientBtn = document.getElementById('addPatientBtn');
+const addPatientModal = document.getElementById('addPatientModal');
+const selectedBedSpan = document.getElementById('selectedBedSpan');
+const patientName = document.getElementById('patientName');
+const patientAge = document.getElementById('patientAge');
+const confirmAdd = document.getElementById('confirmAdd');
+const cancelAdd = document.getElementById('cancelAdd');
+const exportBtn = document.getElementById('exportBtn');
+const importBtn = document.getElementById('importBtn');
+const importModal = document.getElementById('importModal');
+const importFile = document.getElementById('importFile');
+const confirmImport = document.getElementById('confirmImport');
+const cancelImport = document.getElementById('cancelImport');
+
+// Helper functions
+function getPatientByBed(bed) {
+return patients.find(p => p.active && p.bed === bed);
+}
+
+function formatDate(dateStr) {
+return new Date(dateStr).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+}
+
+function getIcuDays(admissionDate) {
+const start = new Date(admissionDate);
+const now = new Date();
+return Math.ceil((now - start) / (1000 * 60 * 60 * 24));
+}
+
+// Standard labs list
+const standardLabs = [
+'TLC', 'HB', 'NEUT', 'NA', 'K', 'Ca total', 'Ca ionised', 'Urea', 'Creat',
+'ALT', 'AST', 'INR', 'PT', 'PTT', 'Albumin', 'CRP', 'Bilirubin total', 'Bilirubin direct'
+];
+
+// Render bed list
+function renderBedList() {
+let html = '';
+for (let i = 1; i <= 8; i++) {
+const patient = getPatientByBed(i);
+html += `<div class="bed-item ${patient ? 'occupied' : ''} ${selectedBed === i ? 'active' : ''}" data-bed="${i}">
+${i} ${patient ? patient.name.split(' ')[0] : ''}
+</div>`;
+}
+bedListEl.innerHTML = html;
+
+document.querySelectorAll('.bed-item').forEach(el => {
+el.addEventListener('click', () => {
+selectedBed = parseInt(el.dataset.bed);
+selectedDate = new Date().toISOString().slice(0,10);
+renderBedList();
+renderMainView();
+});
+});
+}
+
+// Render main view
+function renderMainView() {
+const patient = getPatientByBed(selectedBed);
+
+if (!patient) {
+mainContainer.innerHTML = `
+<div class="focused-card" style="text-align:center; padding:2rem;">
+<p style="color:#5f8f9c;">Bed ${selectedBed} is empty</p>
+<p style="margin-top:0.5rem;">Click "Admit" to add a patient</p>
+</div>
+`;
+return;
+}
+
+const dates = Object.keys(patient.dailyData).sort();
+const icuDays = getIcuDays(patient.admissionDate);
+
+if (!patient.dailyData[selectedDate]) {
+patient.dailyData[selectedDate] = {
+vitals: { hr: '', sbp: '', dbp: '', spo2: '', temp: '', gcs: '' },
+labs: {},
+exams: { respiratory: '', abdominal: '', neurological: '' },
+microbiology: [],
+radiology: []
+};
+}
+
+const dayData = patient.dailyData[selectedDate];
+
+// Timeline
+const timelineHtml = dates.map(date => {
+return `<div class="day-tab ${selectedDate === date ? 'active' : ''}" data-date="${date}">
+Day ${dates.indexOf(date)+1}<br><small>${formatDate(date)}</small>
+</div>`;
+}).join('');
+
+// Editable History HTML
+const historyHtml = `
+<div class="history-section">
+<div class="history-title"><i class="fas fa-notes-medical"></i> Patient History (Editable)</div>
+<div class="history-grid">
+<div class="history-item">
+<label>Cause of Admission</label>
+<textarea id="causeInput">${patient.history?.cause || ''}</textarea>
+</div>
+<div class="history-item">
+<label>Present History</label>
+<textarea id="presentInput">${patient.history?.presentHistory || ''}</textarea>
+</div>
+<div class="history-item">
+<label>Past History</label>
+<textarea id="pastInput">${patient.history?.pastHistory || ''}</textarea>
+</div>
+<div class="history-item">
+<label>Comorbidities</label>
+<input type="text" id="comorbidInput" value="${patient.history?.comorbidities || ''}">
+</div>
+</div>
+</div>
+`;
+
+// Examination HTML - Now directly after History
+const examHtml = `
+<div class="exam-section">
+<div class="exam-title"><i class="fas fa-stethoscope"></i> Examinations</div>
+<div class="exam-grid">
+<div class="exam-box">
+<label>Respiratory</label>
+<textarea id="respiratoryExam">${dayData.exams.respiratory || ''}</textarea>
+</div>
+<div class="exam-box">
+<label>Abdominal</label>
+<textarea id="abdominalExam">${dayData.exams.abdominal || ''}</textarea>
+</div>
+<div class="exam-box">
+<label>Neurological</label>
+<textarea id="neuroExam">${dayData.exams.neurological || ''}</textarea>
+</div>
+</div>
+</div>
+`;
+
+// Labs HTML
+const labsHtml = standardLabs.map(lab => {
+const value = dayData.labs[lab] || '';
+return `
+<div class="lab-item">
+<div class="lab-label">${lab}</div>
+<input type="text" class="lab-input" data-lab="${lab}" value="${value}">
+</div>
+`;
+}).join('');
+
+// Microbiology HTML
+const microHtml = (dayData.microbiology || []).map((micro, index) => `
+<div class="micro-card">
+<div class="micro-row">
+<input type="text" class="micro-type" data-index="${index}" value="${micro.type || ''}" placeholder="Type" class="micro-input">
+<input type="date" class="micro-date" data-index="${index}" value="${micro.date || ''}" class="micro-input">
+</div>
+<div class="micro-row">
+<select class="micro-result" data-index="${index}" class="micro-select">
+<option ${micro.result === 'pending' ? 'selected' : ''}>pending</option>
+<option ${micro.result === 'positive' ? 'selected' : ''}>positive</option>
+<option ${micro.result === 'negative' ? 'selected' : ''}>negative</option>
+</select>
+<input type="text" class="micro-organism" data-index="${index}" value="${micro.organism || ''}" placeholder="Organism" class="micro-input">
+</div>
+<button class="btn-add btn-danger delete-micro" data-index="${index}" style="margin-top:0.5rem;">Delete</button>
+</div>
+`).join('');
+
+// Radiology HTML
+const radiologyHtml = (dayData.radiology || []).map((rad, index) => `
+<div class="radiology-card">
+<div class="radiology-row">
+<input type="text" class="radiology-name" data-rad-index="${index}" value="${rad.name || ''}" placeholder="Study name" class="radiology-input">
+<input type="date" class="radiology-date" data-rad-index="${index}" value="${rad.date || ''}" class="radiology-input" style="width:140px;">
+</div>
+<div class="radiology-row">
+<div class="radiology-status ${rad.status === 'done' ? 'status-done' : 'status-pending'}"
+onclick="toggleRadStatus(${index})" style="flex:1;">
+${rad.status || 'pending'}
+</div>
+</div>
+<textarea class="radiology-result" data-rad-index="${index}"
+${rad.status !== 'done' ? 'disabled' : ''}
+placeholder="Results" style="width:100%; padding:0.4rem; border-radius:20px; border:1px solid #cde5f0; min-height:60px;">${rad.result || ''}</textarea>
+<button class="btn-add btn-danger delete-radiology" data-rad-index="${index}" style="margin-top:0.5rem;">Delete</button>
+</div>
+`).join('');
+
+mainContainer.innerHTML = `
+<div class="focused-card">
+<!-- Patient Header -->
+<div class="patient-header">
+<div>
+<span class="patient-name">${patient.name}</span>
+<span class="patient-badge">${patient.age}y</span>
+<div class="admission-info">
+<span class="admission-badge"><i class="fas fa-calendar"></i> ${formatDate(patient.admissionDate)}</span>
+<span class="stay-badge"><i class="fas fa-clock"></i> Day ${icuDays}</span>
+</div>
+</div>
+</div>
+
+<!-- Editable History Section -->
+${historyHtml}
+
+<!-- Examination Section - Now directly after History -->
+${examHtml}
+
+<!-- Timeline -->
+<div class="timeline">
+${timelineHtml}
+</div>
+
+<!-- Vitals -->
+<div class="section">
+<div class="section-title"><i class="fas fa-heartbeat"></i> Vitals</div>
+<div class="vitals-grid">
+<div class="vital-item"><div>HR</div><input type="number" class="vital-input" id="hrInput" value="${dayData.vitals.hr || ''}"></div>
+<div class="vital-item"><div>SBP</div><input type="number" class="vital-input" id="sbpInput" value="${dayData.vitals.sbp || ''}"></div>
+<div class="vital-item"><div>DBP</div><input type="number" class="vital-input" id="dbpInput" value="${dayData.vitals.dbp || ''}"></div>
+<div class="vital-item"><div>SpO₂</div><input type="number" class="vital-input" id="spo2Input" value="${dayData.vitals.spo2 || ''}"></div>
+<div class="vital-item"><div>Temp</div><input type="number" step="0.1" class="vital-input" id="tempInput" value="${dayData.vitals.temp || ''}"></div>
+<div class="vital-item"><div>GCS</div><input type="number" class="vital-input" id="gcsInput" value="${dayData.vitals.gcs || ''}"></div>
+</div>
+</div>
+
+<!-- Labs -->
+<div class="section">
+<div class="section-title"><i class="fas fa-flask"></i> Labs</div>
+<div class="labs-grid">
+${labsHtml}
+</div>
+</div>
+
+<!-- Microbiology -->
+<div class="section">
+<div class="section-title"><i class="fas fa-bacteria"></i> Microbiology</div>
+<div id="microContainer">
+${microHtml}
+</div>
+<button class="btn-add" id="addMicroBtn"><i class="fas fa-plus"></i> Add Microbiology</button>
+</div>
+
+<!-- Radiology -->
+<div class="section">
+<div class="section-title"><i class="fas fa-x-ray"></i> Radiology</div>
+<div id="radiologyContainer">
+${radiologyHtml}
+</div>
+<button class="btn-add" id="addRadiologyBtn"><i class="fas fa-plus"></i> Add Radiology Study</button>
+</div>
+
+<!-- Save Button -->
+<button class="btn-save" id="saveBtn">Save All Changes</button>
+</div>
+`;
+
+// Event Listeners
+document.querySelectorAll('.day-tab').forEach(el => {
+el.addEventListener('click', () => {
+selectedDate = el.dataset.date;
+renderMainView();
+});
+});
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+// Save editable history
+if (!patient.history) patient.history = {};
+patient.history.cause = document.getElementById('causeInput')?.value || '';
+patient.history.presentHistory = document.getElementById('presentInput')?.value || '';
+patient.history.pastHistory = document.getElementById('pastInput')?.value || '';
+patient.history.comorbidities = document.getElementById('comorbidInput')?.value || '';
+
+// Save vitals
+dayData.vitals = {
+hr: document.getElementById('hrInput')?.value,
+sbp: document.getElementById('sbpInput')?.value,
+dbp: document.getElementById('dbpInput')?.value,
+spo2: document.getElementById('spo2Input')?.value,
+temp: document.getElementById('tempInput')?.value,
+gcs: document.getElementById('gcsInput')?.value
+};
+
+// Save exams
+dayData.exams = {
+respiratory: document.getElementById('respiratoryExam')?.value || '',
+abdominal: document.getElementById('abdominalExam')?.value || '',
+neurological: document.getElementById('neuroExam')?.value || ''
+};
+
+// Save labs
+document.querySelectorAll('.lab-input').forEach(input => {
+const lab = input.dataset.lab;
+if (lab) dayData.labs[lab] = input.value;
+});
+
+// Save microbiology
+if (dayData.microbiology) {
+document.querySelectorAll('.micro-type').forEach(el => {
+const idx = el.dataset.index;
+if (dayData.microbiology[idx]) dayData.microbiology[idx].type = el.value;
+});
+document.querySelectorAll('.micro-date').forEach(el => {
+const idx = el.dataset.index;
+if (dayData.microbiology[idx]) dayData.microbiology[idx].date = el.value;
+});
+document.querySelectorAll('.micro-result').forEach(el => {
+const idx = el.dataset.index;
+if (dayData.microbiology[idx]) dayData.microbiology[idx].result = el.value;
+});
+document.querySelectorAll('.micro-organism').forEach(el => {
+const idx = el.dataset.index;
+if (dayData.microbiology[idx]) dayData.microbiology[idx].organism = el.value;
+});
+}
+
+// Save radiology
+if (dayData.radiology) {
+document.querySelectorAll('.radiology-name').forEach(el => {
+const idx = el.dataset.radIndex;
+if (dayData.radiology[idx]) dayData.radiology[idx].name = el.value;
+});
+document.querySelectorAll('.radiology-date').forEach(el => {
+const idx = el.dataset.radIndex;
+if (dayData.radiology[idx]) dayData.radiology[idx].date = el.value;
+});
+document.querySelectorAll('.radiology-result').forEach(el => {
+const idx = el.dataset.radIndex;
+if (dayData.radiology[idx]) dayData.radiology[idx].result = el.value;
+});
+}
+
+saveData();
+alert('✅ All changes saved');
+});
+
+// Add microbiology
+document.getElementById('addMicroBtn').addEventListener('click', () => {
+if (!dayData.microbiology) dayData.microbiology = [];
+dayData.microbiology.push({
+type: '',
+date: new Date().toISOString().slice(0,10),
+result: 'pending',
+organism: ''
+});
+renderMainView();
+});
+
+// Add radiology
+document.getElementById('addRadiologyBtn').addEventListener('click', () => {
+if (!dayData.radiology) dayData.radiology = [];
+dayData.radiology.push({
+name: 'New Study',
+date: new Date().toISOString().slice(0,10),
+status: 'pending',
+result: ''
+});
+renderMainView();
+});
+
+// Delete microbiology
+document.querySelectorAll('.delete-micro').forEach(btn => {
+btn.addEventListener('click', (e) => {
+const idx = e.target.dataset.index;
+if (dayData.microbiology) {
+dayData.microbiology.splice(idx, 1);
+renderMainView();
+}
+});
+});
+
+// Delete radiology
+document.querySelectorAll('.delete-radiology').forEach(btn => {
+btn.addEventListener('click', (e) => {
+const idx = e.target.dataset.radIndex;
+if (dayData.radiology) {
+dayData.radiology.splice(idx, 1);
+renderMainView();
+}
+});
+});
+
+// Toggle radiology status
+window.toggleRadStatus = (index) => {
+if (dayData.radiology && dayData.radiology[index]) {
+dayData.radiology[index].status = dayData.radiology[index].status === 'done' ? 'pending' : 'done';
+renderMainView();
+}
+};
+}
+
+// Add Patient
+addPatientBtn.addEventListener('click', () => {
+selectedBedSpan.textContent = selectedBed;
+addPatientModal.style.display = 'flex';
+});
+
+confirmAdd.addEventListener('click', () => {
+const name = patientName.value.trim();
+const age = parseInt(patientAge.value);
+
+if (!name || !age) {
+alert('Please enter name and age');
+return;
+}
+
+if (getPatientByBed(selectedBed)) {
+alert(`Bed ${selectedBed} is occupied`);
+addPatientModal.style.display = 'none';
+return;
+}
+
+const today = new Date().toISOString().slice(0,10);
+patients.push({
+id: Date.now(),
+name,
+age,
+bed: selectedBed,
+active: true,
+admissionDate: today,
+history: {
+cause: '',
+presentHistory: '',
+pastHistory: '',
+comorbidities: ''
+},
+dailyData: {
+[today]: {
+vitals: { hr: '', sbp: '', dbp: '', spo2: '', temp: '', gcs: '' },
+labs: {},
+exams: { respiratory: '', abdominal: '', neurological: '' },
+microbiology: [],
+radiology: []
+}
+}
+});
+
+saveData();
+addPatientModal.style.display = 'none';
+patientName.value = '';
+patientAge.value = '';
+renderBedList();
+renderMainView();
+});
+
+cancelAdd.addEventListener('click', () => {
+addPatientModal.style.display = 'none';
+});
+
+// Export
+exportBtn.addEventListener('click', () => {
+const dataStr = JSON.stringify(patients, null, 2);
+const blob = new Blob([dataStr], { type: 'application/json' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = `icu_backup_${new Date().toISOString().slice(0,10)}.json`;
+a.click();
+URL.revokeObjectURL(url);
+alert('✅ Backup downloaded');
+});
+
+// Import
+importBtn.addEventListener('click', () => {
+importModal.style.display = 'flex';
+});
+
+cancelImport.addEventListener('click', () => {
+importModal.style.display = 'none';
+importFile.value = '';
+});
+
+confirmImport.addEventListener('click', () => {
+const file = importFile.files[0];
+if (!file) return;
+
+const reader = new FileReader();
+reader.onload = (e) => {
+try {
+patients = JSON.parse(e.target.result);
+saveData();
+importModal.style.display = 'none';
+renderBedList();
+renderMainView();
+alert('✅ Data restored');
+} catch (err) {
+alert('Invalid file');
+}
+};
+reader.readAsText(file);
+});
+
+// Initialize
+renderBedList();
+renderMainView();
+
+// Close modals on click outside
+window.addEventListener('click', (e) => {
+if (e.target.classList.contains('modal')) {
+e.target.style.display = 'none';
+}
+});
+})();
+</script>
+</body>
+</html>
